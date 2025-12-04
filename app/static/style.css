@@ -1,122 +1,214 @@
 :root {
-    --bg-color: #0f172a;
-    --card-bg: #1e293b;
+    --bg-color: #0a0e1a;
+    --bg-gradient: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+    --card-bg: rgba(30, 41, 59, 0.6);
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
-    --accent-color: #f59e0b; /* Amber/Orange for fire */
+    --accent-color: #f59e0b;
     --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
     --success-color: #10b981;
+    --purple-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    --blue-gradient: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    --green-gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-gradient);
+    background-attachment: fixed;
     color: var(--text-primary);
     margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+    animation: rotate 30s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .container {
     width: 100%;
-    max-width: 400px;
+    max-width: 480px;
     padding: 20px;
+    position: relative;
+    z-index: 1;
 }
 
 .card {
-    background-color: var(--card-bg);
-    border-radius: 24px;
-    padding: 32px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 28px;
+    padding: 40px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 
+                0 0 0 1px rgba(255, 255, 255, 0.1);
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 h1 {
-    font-size: 24px;
-    font-weight: 600;
+    font-size: 28px;
+    font-weight: 700;
     margin-bottom: 8px;
     color: var(--text-primary);
+    letter-spacing: -0.5px;
 }
 
 p.subtitle {
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 15px;
     margin-bottom: 32px;
+    font-weight: 400;
 }
 
 .streak-container {
     margin-bottom: 40px;
     position: relative;
+    padding: 20px;
+    background: rgba(245, 158, 11, 0.05);
+    border-radius: 20px;
+    border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
 .fire-icon {
-    font-size: 80px;
+    font-size: 90px;
     display: inline-block;
-    filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.5));
+    filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.6));
     animation: pulse 2s infinite ease-in-out;
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.5)); }
-    50% { transform: scale(1.1); filter: drop-shadow(0 0 30px rgba(239, 68, 68, 0.7)); }
-    100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.5)); }
+    0% { 
+        transform: scale(1); 
+        filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.6)); 
+    }
+    50% { 
+        transform: scale(1.15); 
+        filter: drop-shadow(0 0 40px rgba(239, 68, 68, 0.8)); 
+    }
+    100% { 
+        transform: scale(1); 
+        filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.6)); 
+    }
 }
 
 .streak-count {
-    font-size: 64px;
+    font-size: 72px;
     font-weight: 800;
     background: var(--accent-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
     line-height: 1;
     margin-top: 10px;
+    animation: countUp 0.5s ease-out;
+}
+
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .streak-label {
-    font-size: 16px;
+    font-size: 14px;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     font-weight: 600;
+    margin-top: 8px;
 }
 
 .btn {
     background: var(--accent-gradient);
     color: white;
     border: none;
-    padding: 16px 32px;
+    padding: 18px 36px;
     border-radius: 16px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     width: 100%;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
 }
 
 .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(245, 158, 11, 0.5);
 }
 
 .btn:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
 }
 
 .btn:disabled {
-    background: var(--card-bg);
-    border: 1px solid var(--text-secondary);
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.3);
     color: var(--text-secondary);
     cursor: not-allowed;
     box-shadow: none;
 }
 
 .stats-row {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
     margin-top: 32px;
     padding-top: 24px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -124,34 +216,215 @@ p.subtitle {
 
 .stat-item {
     text-align: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
 }
 
 .stat-value {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 700;
     color: var(--text-primary);
+    margin-bottom: 4px;
 }
 
 .stat-label {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
+/* Milestone Achievements Section */
+.achievements-section {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title::before {
+    content: '🏆';
+    font-size: 20px;
+}
+
+.milestones-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.milestone-badge {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 12px 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.milestone-badge.achieved {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.3);
+    animation: achievementPop 0.5s ease-out;
+}
+
+@keyframes achievementPop {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.milestone-badge.achieved::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--accent-gradient);
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.milestone-day {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+}
+
+.milestone-badge.achieved .milestone-day {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.milestone-label {
+    font-size: 9px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+}
+
+.milestone-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-top: 4px;
+    position: relative;
+    z-index: 1;
+}
+
+.total-achievements {
+    background: var(--purple-gradient);
+    padding: 16px;
+    border-radius: 16px;
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.achievement-label {
+    font-size: 14px;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.achievement-count {
+    font-size: 32px;
+    font-weight: 800;
+    color: white;
+}
+
+/* Input Styles */
 .user-input-container {
     margin-bottom: 20px;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 12px;
+    padding: 14px 16px;
     border-radius: 12px;
     color: white;
-    width: 70%;
-    margin-right: 8px;
+    width: 100%;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
 }
 
-input[type="text"]:focus {
+input[type="text"]:focus,
+input[type="password"]:focus {
     outline: none;
     border-color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .container {
+        padding: 16px;
+    }
+    
+    .card {
+        padding: 28px 24px;
+    }
+    
+    .milestones-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+    }
+    
+    .milestone-day {
+        font-size: 14px;
+    }
+    
+    .milestone-label {
+        font-size: 8px;
+    }
 }

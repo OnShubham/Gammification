@@ -129,11 +129,39 @@ function updateUI(user) {
     document.getElementById('last-checkin').textContent = user.last_checkin_date || "Never";
     document.getElementById('display-username').textContent = user.username;
 
+    // Update counting streaks
+    const countingStreaks = user.counting_streaks || 0;
+    document.getElementById('counting-streaks').textContent = countingStreaks;
+
+    // Update milestone badges
+    const milestones = [3, 7, 14, 30, 60, 90, 180, 365];
+    const regularStreaks = user.regular_streaks || {};
+    const milestonesGrid = document.getElementById('milestones-grid');
+
+    milestonesGrid.innerHTML = ''; // Clear existing badges
+
+    milestones.forEach(milestone => {
+        const milestoneKey = `${milestone}_day`;
+        const count = regularStreaks[milestoneKey] || 0;
+        const isAchieved = count > 0;
+
+        const badge = document.createElement('div');
+        badge.className = `milestone-badge ${isAchieved ? 'achieved' : ''}`;
+
+        badge.innerHTML = `
+            <div class="milestone-day">${milestone}</div>
+            <div class="milestone-label">DAYS</div>
+            ${isAchieved ? `<div class="milestone-count">×${count}</div>` : ''}
+        `;
+
+        milestonesGrid.appendChild(badge);
+    });
+
     const btn = document.getElementById('checkin-btn');
     const today = new Date().toISOString().split('T')[0];
 
     if (user.last_checkin_date === today) {
-        btn.textContent = "Checked In Today";
+        btn.textContent = "Checked In Today ✓";
         btn.disabled = true;
     } else {
         btn.textContent = "Check In Now";

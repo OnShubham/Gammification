@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Streak</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/style.css?v=2.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 
@@ -52,7 +52,7 @@
             </div>
 
             <p class="subtitle">Keep the fire burning, <span id="display-username"
-                    style="color: var(--accent-color);"></span>!</p>
+                    style="color: var(--accent-color); font-weight: 600;"></span>!</p>
 
             <div class="streak-container">
                 <div class="fire-icon">🔥</div>
@@ -72,10 +72,24 @@
                     <div class="stat-label">Last Check-in</div>
                 </div>
             </div>
+
+            <!-- Achievements Section -->
+            <div class="achievements-section">
+                <div class="section-title">Milestone Achievements</div>
+
+                <div class="milestones-grid" id="milestones-grid">
+                    <!-- Milestone badges will be dynamically inserted here -->
+                </div>
+
+                <div class="total-achievements">
+                    <div class="achievement-label">Total Milestones</div>
+                    <div class="achievement-count" id="counting-streaks">0</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="/static/script.js"></script>
+    <script src="/static/script.js?v=2.0"></script>
 </body>
 
 </html>
