@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Test - Direct Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0e1a;
+            --bg-gradient: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            --card-bg: rgba(30, 41, 59, 0.6);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #f59e0b;
+            --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            --purple-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+            animation: rotate 30s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 32px;
+        }
+
+        .fire-icon {
+            font-size: 90px;
+            display: inline-block;
+            filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.6));
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.6));
+            }
+
+            50% {
+                transform: scale(1.15);
+                filter: drop-shadow(0 0 40px rgba(239, 68, 68, 0.8));
+            }
+
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.6));
+            }
+        }
+
+        .streak-count {
+            font-size: 72px;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-top: 10px;
+        }
+
+        .streak-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .achievements-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '🏆';
+            font-size: 20px;
+        }
+
+        .milestones-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .milestone-badge {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .milestone-badge.achieved {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .milestone-badge.achieved::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--accent-gradient);
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .milestone-day {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .milestone-badge.achieved .milestone-day {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .milestone-label {
+            font-size: 9px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .milestone-count {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-top: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .total-achievements {
+            background: var(--purple-gradient);
+            padding: 16px;
+            border-radius: 16px;
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .achievement-label {
+            font-size: 14px;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .achievement-count {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .test-note {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .test-note h2 {
+            color: #10b981;
+            font-size: 18px;
+            margin: 0 0 8px 0;
+        }
+
+        .test-note p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="test-note">
+                <h2>✅ UI Test Preview</h2>
+                <p>This is how your updated UI should look!</p>
+            </div>
+
+            <h1>Daily Check-In</h1>
+            <p class="subtitle">Keep the fire burning, <span
+                    style="color: var(--accent-color); font-weight: 600;">shubham</span>!</p>
+
+            <div
+                style="margin-bottom: 40px; padding: 20px; background: rgba(245, 158, 11, 0.05); border-radius: 20px; border: 1px solid rgba(245, 158, 11, 0.2);">
+                <div class="fire-icon">🔥</div>
+                <div class="streak-count">1</div>
+                <div class="streak-label">Day Streak</div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Longest Streak</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2025-12-04</div>
+                    <div class="stat-label">Last Check-in</div>
+                </div>
+            </div>
+
+            <div class="achievements-section">
+                <div class="section-title">Milestone Achievements</div>
+
+                <div class="milestones-grid">
+                    <div class="milestone-badge">
+                        <div class="milestone-day">3</div>
+                        <div class="milestone-label">DAYS</div>
+                    </div>
+                    <div class="milestone-badge">
+                        <div class="milestone-day">7</div>
+                        <div class="milestone-label">DAYS</div>
+                    </div>
+                    <div class="milestone-badge">
+                        <div class="milestone-day">14</div>
+                        <div class="milestone-label">DAYS</div>
+                    </div>
+                    <div class="milestone-badge">
+                        <div class="milestone-day">30</div>
+                        <div class="milestone-label">DAYS</div>
+                    </div>
+                    <div class="milestone-badge">
+                        <div class="milestone-day">60</div>
+                        <div class="milestone-label">DAYS</div>
+                    </div>
+                    <div class="milestone-badge">
+                        <div class="milestone-day">90</div>
+                        <div class="milestone-label">DAYS</div>
+                    </div>
+                    <div class="milestone-badge">
+                        <div class="milestone-day">180</div>
+                        <div class="milestone-label">DAYS</div>
+                    </div>
+                    <div class="milestone-badge">
+                        <div class="milestone-day">365</div>
+                        <div class="milestone-label">DAYS</div>
+                    </div>
+                </div>
+
+                <div class="total-achievements">
+                    <div class="achievement-label">Total Milestones</div>
+                    <div class="achievement-count">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
