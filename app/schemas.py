@@ -12,6 +12,8 @@ class UserResponse(UserBase):
     last_checkin_date: Optional[date]
     current_streak: int
     longest_streak: int
+    regular_streaks: dict = {}
+    counting_streaks: int = 0
 
     class Config:
         from_attributes = True

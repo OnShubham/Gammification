@@ -19,7 +19,9 @@ async function login() {
             const data = await response.json();
             token = data.access_token;
             localStorage.setItem('token', token);
-            loadUser();
+            await loadUser();
+            // Automatically check in after successful login
+            // await autoCheckIn();
         } else {
             alert('Login failed');
         }
@@ -65,6 +67,8 @@ async function loadUser() {
         if (response.ok) {
             const user = await response.json();
             showApp(user);
+            // Automatically check in after loading user
+            await autoCheckIn();
         } else {
             logout();
         }
@@ -93,6 +97,29 @@ async function checkIn() {
         }
     } catch (error) {
         console.error('Error:', error);
+    }
+}
+
+async function autoCheckIn() {
+    const localDate = new Date().toISOString().split('T')[0];
+
+    try {
+        const response = await fetch('/api/checkin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ local_date: localDate }),
+        });
+
+        if (response.ok) {
+            const user = await response.json();
+            updateUI(user);
+            console.log('Auto check-in successful');
+        }
+    } catch (error) {
+        console.error('Auto check-in error:', error);
     }
 }
 

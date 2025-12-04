@@ -30,6 +30,8 @@ def create_user(user: schemas.UserCreate) -> models.User:
         "last_checkin_date": None,  # stored as null initially
         "current_streak": 0,
         "longest_streak": 0,
+        "regular_streaks": {},  # Initialize empty milestone tracker
+        "counting_streaks": 0,  # Initialize milestone counter
     }
 
     # Insert into MongoDB
@@ -58,6 +60,22 @@ def check_in(user: models.User, local_date: date) -> tuple[models.User, str]:
     user.last_checkin_date = local_date
     user.longest_streak = max(user.longest_streak, user.current_streak)
 
+    # Track streak milestones
+    milestones = [3, 7, 14, 30, 60, 90, 180, 365]  # Define milestone days
+    for milestone in milestones:
+        if user.current_streak == milestone:
+            milestone_key = f"{milestone}_day"
+            # Initialize regular_streaks if not present
+            if not hasattr(user, 'regular_streaks') or user.regular_streaks is None:
+                user.regular_streaks = {}
+            # Increment the count for this milestone
+            user.regular_streaks[milestone_key] = user.regular_streaks.get(milestone_key, 0) + 1
+            # Increment total counting_streaks
+            if not hasattr(user, 'counting_streaks'):
+                user.counting_streaks = 0
+            user.counting_streaks += 1
+            break  # Only count one milestone per check-in
+
     # Convert date -> datetime for MongoDB storage
     mongo_last_checkin = datetime.combine(local_date, datetime.min.time())
 
@@ -69,6 +87,8 @@ def check_in(user: models.User, local_date: date) -> tuple[models.User, str]:
                 "last_checkin_date": mongo_last_checkin,
                 "current_streak": user.current_streak,
                 "longest_streak": user.longest_streak,
+                "regular_streaks": user.regular_streaks if hasattr(user, 'regular_streaks') else {},
+                "counting_streaks": user.counting_streaks if hasattr(user, 'counting_streaks') else 0,
             }
         },
     )

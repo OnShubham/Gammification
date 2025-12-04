@@ -7,8 +7,10 @@ class User(BaseModel):
     username: str
     hashed_password: str
     last_checkin_date: Optional[date] = None
-    current_streak: int = 0
-    longest_streak: int = 0
+    current_streak: int = 1
+    longest_streak: int = 1
+    regular_streaks: dict = {}  # Track milestone achievements (e.g., {"7_day": 3, "30_day": 1})
+    counting_streaks: int = 0  # Total count of all streak milestones achieved
 
     class Config:
         json_encoders = {date: lambda v: v.isoformat() if v else None}
