@@ -4,41 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Streak</title>
-    <link rel="stylesheet" href="/static/style.css?v=2.0">
+    <title>Daily Streak Tracker</title>
+    <link rel="stylesheet" href="/static/style.css?v=3.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div class="container">
 
-        <!-- Login Form -->
-        <div id="login-card" class="card">
-            <h1>Welcome Back</h1>
-            <p class="subtitle">Login to save your streak</p>
+        <!-- User ID Input (shown when no user is set) -->
+        <div id="user-id-card" class="card">
+            <h1>Welcome to Streak Tracker</h1>
+            <p class="subtitle">Enter your User ID to get started</p>
             <div class="user-input-container">
-                <input type="text" id="login-username" placeholder="Username" style="width: 100%; margin-bottom: 10px;">
-                <input type="password" id="login-password" placeholder="Password"
+                <input type="text" id="user-id-input" placeholder="Enter your User ID (e.g., user123)" 
                     style="width: 100%; margin-bottom: 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 12px; color: white;">
-                <button class="btn" onclick="login()">Login</button>
+                <button class="btn" onclick="setUserId()">Start Tracking</button>
                 <p style="margin-top: 20px; font-size: 14px; color: var(--text-secondary);">
-                    New here? <a href="#" onclick="showRegister()" style="color: var(--accent-color);">Register</a>
-                </p>
-            </div>
-        </div>
-
-        <!-- Register Form -->
-        <div id="register-card" class="card" style="display: none;">
-            <h1>Create Account</h1>
-            <p class="subtitle">Start your journey today</p>
-            <div class="user-input-container">
-                <input type="text" id="reg-username" placeholder="Username" style="width: 100%; margin-bottom: 10px;">
-                <input type="password" id="reg-password" placeholder="Password"
-                    style="width: 100%; margin-bottom: 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 12px; color: white;">
-                <button class="btn" onclick="register()">Sign Up</button>
-                <p style="margin-top: 20px; font-size: 14px; color: var(--text-secondary);">
-                    Already have an account? <a href="#" onclick="showLogin()"
-                        style="color: var(--accent-color);">Login</a>
+                    Your User ID can be anything - it's just used to track your streaks!
                 </p>
             </div>
         </div>
@@ -47,11 +30,11 @@
         <div id="app-card" class="card" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h1 style="margin: 0;">Daily Check-In</h1>
-                <button onclick="logout()"
-                    style="background: none; border: none; color: var(--text-secondary); cursor: pointer;">Logout</button>
+                <button onclick="changeUser()"
+                    style="background: none; border: none; color: var(--text-secondary); cursor: pointer;">Change User</button>
             </div>
 
-            <p class="subtitle">Keep the fire burning, <span id="display-username"
+            <p class="subtitle">Keep the fire burning, <span id="display-user-id"
                     style="color: var(--accent-color); font-weight: 600;"></span>!</p>
 
             <div class="streak-container">
@@ -89,7 +72,7 @@
         </div>
     </div>
 
-    <script src="/static/script.js?v=2.0"></script>
+    <script src="/static/script.js?v=3.0"></script>
 </body>
 
 </html>

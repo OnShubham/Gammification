@@ -4,8 +4,7 @@ from datetime import date
 
 class User(BaseModel):
     """User model for MongoDB"""
-    username: str
-    hashed_password: str
+    user_id: str
     last_checkin_date: Optional[date] = None
     current_streak: int = 1
     longest_streak: int = 1

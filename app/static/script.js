@@ -1,68 +1,43 @@
-let token = localStorage.getItem('token');
+let currentUserId = localStorage.getItem('user_id');
 
-async function login() {
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
+async function setUserId() {
+    const userId = document.getElementById('user-id-input').value.trim();
 
-    const formData = new URLSearchParams();
-    formData.append('username', username);
-    formData.append('password', password);
-
-    try {
-        const response = await fetch('/token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            token = data.access_token;
-            localStorage.setItem('token', token);
-            await loadUser();
-            // Automatically check in after successful login
-            // await autoCheckIn();
-        } else {
-            alert('Login failed');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-async function register() {
-    const username = document.getElementById('reg-username').value;
-    const password = document.getElementById('reg-password').value;
-
-    try {
-        const response = await fetch('/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-
-        if (response.ok) {
-            alert('Registration successful! Please login.');
-            showLogin();
-        } else {
-            const data = await response.json();
-            alert(data.detail || 'Registration failed');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-async function loadUser() {
-    if (!token) {
-        showLogin();
+    if (!userId) {
+        alert('Please enter a User ID');
         return;
     }
 
     try {
-        const response = await fetch('/api/user/me', {
-            headers: { 'Authorization': `Bearer ${token}` }
+        // Create or get user
+        const response = await fetch(`/api/user/create?user_id=${encodeURIComponent(userId)}`, {
+            method: 'POST'
         });
+
+        if (response.ok) {
+            const user = await response.json();
+            currentUserId = userId;
+            localStorage.setItem('user_id', userId);
+            showApp(user);
+            // Automatically check in after setting user ID
+            await autoCheckIn();
+        } else {
+            alert('Failed to create/get user');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
+
+async function loadUser() {
+    if (!currentUserId) {
+        showUserIdInput();
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/user/${encodeURIComponent(currentUserId)}`);
 
         if (response.ok) {
             const user = await response.json();
@@ -70,11 +45,12 @@ async function loadUser() {
             // Automatically check in after loading user
             await autoCheckIn();
         } else {
-            logout();
+            // User not found, show input
+            changeUser();
         }
     } catch (error) {
         console.error('Error:', error);
-        logout();
+        changeUser();
     }
 }
 
@@ -86,17 +62,22 @@ async function checkIn() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ local_date: localDate }),
+            body: JSON.stringify({
+                user_id: currentUserId,
+                local_date: localDate
+            }),
         });
 
         if (response.ok) {
             const user = await response.json();
             updateUI(user);
+        } else {
+            alert('Check-in failed. Please try again.');
         }
     } catch (error) {
         console.error('Error:', error);
+        alert('An error occurred during check-in.');
     }
 }
 
@@ -108,9 +89,11 @@ async function autoCheckIn() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ local_date: localDate }),
+            body: JSON.stringify({
+                user_id: currentUserId,
+                local_date: localDate
+            }),
         });
 
         if (response.ok) {
@@ -127,7 +110,7 @@ function updateUI(user) {
     document.getElementById('streak-count').textContent = user.current_streak;
     document.getElementById('longest-streak').textContent = user.longest_streak;
     document.getElementById('last-checkin').textContent = user.last_checkin_date || "Never";
-    document.getElementById('display-username').textContent = user.username;
+    document.getElementById('display-user-id').textContent = user.user_id;
 
     // Update counting streaks
     const countingStreaks = user.counting_streaks || 0;
@@ -169,30 +152,23 @@ function updateUI(user) {
     }
 }
 
-function showLogin() {
-    document.getElementById('login-card').style.display = 'block';
-    document.getElementById('register-card').style.display = 'none';
-    document.getElementById('app-card').style.display = 'none';
-}
-
-function showRegister() {
-    document.getElementById('login-card').style.display = 'none';
-    document.getElementById('register-card').style.display = 'block';
+function showUserIdInput() {
+    document.getElementById('user-id-card').style.display = 'block';
     document.getElementById('app-card').style.display = 'none';
 }
 
 function showApp(user) {
-    document.getElementById('login-card').style.display = 'none';
-    document.getElementById('register-card').style.display = 'none';
+    document.getElementById('user-id-card').style.display = 'none';
     document.getElementById('app-card').style.display = 'block';
     updateUI(user);
 }
 
-function logout() {
-    token = null;
-    localStorage.removeItem('token');
-    showLogin();
+function changeUser() {
+    currentUserId = null;
+    localStorage.removeItem('user_id');
+    document.getElementById('user-id-input').value = '';
+    showUserIdInput();
 }
 
-// Check for token on load
+// Check for user ID on load
 window.onload = loadUser;

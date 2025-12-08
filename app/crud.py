@@ -1,12 +1,12 @@
-from . import models, schemas, auth
+from . import models, schemas
 from .database import users_collection
 from datetime import date, timedelta, datetime
 from typing import Optional
 
 
-def get_user_by_username(username: str) -> Optional[models.User]:
-    """Get user by username from MongoDB"""
-    user_data = users_collection.find_one({"username": username})
+def get_user_by_id(user_id: str) -> Optional[models.User]:
+    """Get user by user_id from MongoDB"""
+    user_data = users_collection.find_one({"user_id": user_id})
     if user_data:
         # Remove MongoDB's _id field before creating Pydantic model
         user_data.pop("_id", None)
@@ -21,12 +21,10 @@ def get_user_by_username(username: str) -> Optional[models.User]:
     return None
 
 
-def create_user(user: schemas.UserCreate) -> models.User:
+def create_user(user_id: str) -> models.User:
     """Create a new user in MongoDB"""
-    hashed_password = auth.get_password_hash(user.password)
     user_data = {
-        "username": user.username,
-        "hashed_password": hashed_password,
+        "user_id": user_id,
         "last_checkin_date": None,  # stored as null initially
         "current_streak": 0,
         "longest_streak": 0,
@@ -81,7 +79,7 @@ def check_in(user: models.User, local_date: date) -> tuple[models.User, str]:
 
     # Update in MongoDB
     users_collection.update_one(
-        {"username": user.username},
+        {"user_id": user.user_id},
         {
             "$set": {
                 "last_checkin_date": mongo_last_checkin,
