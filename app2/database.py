@@ -10,3 +10,7 @@ DB = CLIENT[DB_NAME]
 # Define collections 
 DAILY_QUESTS = DB["Daily_Quests"]
 ACTIVITY_LOG = DB["Activity_Log"]
+
+# Connect to Users DB (shared with app 1)
+USERS_DB = CLIENT["gammification_db"]
+USERS_COLLECTION = USERS_DB["users"]

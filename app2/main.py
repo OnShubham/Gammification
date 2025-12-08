@@ -6,9 +6,11 @@ from datetime import datetime, date
 from typing import Optional
 
 # Import core logic and data
-from .database import ACTIVITY_LOG, DAILY_QUESTS 
-from .assign_tasks import assign_tasks, get_full_quest_details # Import assign and helper
-from .Master_Activities import MASTER_ACTIVITY_DATA 
+from app2.database import ACTIVITY_LOG, DAILY_QUESTS
+from app2.assign_tasks import assign_tasks, get_full_quest_details
+from app2.Master_Activities import MASTER_ACTIVITY_DATA
+from app2.xp_system import process_user_activity_xp
+
 
 app = FastAPI(title="Bobo Gamification API")
 
@@ -86,10 +88,12 @@ def handle_assign_quest(user_id: int):
         # You might want a more specific error here
         raise HTTPException(status_code=500, detail=f"Error assigning quest: {e}")
 
+
 @app.post("/log_activity")
 def handle_log_activity(log_data: ActivityLog):
     """
     Logs a completed activity and runs the task check (simulating the DB trigger).
+    Now also calculates and updates XP.
     """
     user_id = log_data.user_id
     activity_name = log_data.activity_name
@@ -107,13 +111,17 @@ def handle_log_activity(log_data: ActivityLog):
     }
     ACTIVITY_LOG.insert_one(log_document)
     
-    # 3. Simulate the DB Trigger: Execute the check function immediately
+    # 3. XP & Level Update
+    xp_result = process_user_activity_xp(user_id, activity_name)
+
+    # 4. Simulate the DB Trigger: Execute the check function immediately
     check_result = check_daily_tasks(user_id)
     
     return {
         "status": "Activity logged successfully.",
         "quest_status": check_result,
-        "logged_activity": activity_name
+        "logged_activity": activity_name,
+        "xp_update": xp_result
     }
 
 @app.get("/quests/{user_id}/status")
