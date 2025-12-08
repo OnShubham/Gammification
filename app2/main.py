@@ -1,9 +1,13 @@
 # main.py
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from datetime import datetime, date
 from typing import Optional
+import os
 
 # Import core logic and data
 from app2.database import ACTIVITY_LOG, DAILY_QUESTS
@@ -13,6 +17,13 @@ from app2.xp_system import process_user_activity_xp
 
 
 app = FastAPI(title="Bobo Gamification API")
+
+# Get the directory where this file is located
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Mount static files and templates
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 # Pydantic Model for incoming activity logs
 class ActivityLog(BaseModel):
@@ -71,11 +82,19 @@ def check_daily_tasks(user_id: int) -> Optional[dict]:
         "remaining": 5 - tasks_completed_count
     }
 
+
 # --- API Endpoints ---
 
-@app.get("/")
-def read_root():
-    return {"message": "Bobo Gamification Service is Running"}
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    """Serve the main frontend page"""
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/api/activities")
+def get_all_activities():
+    """Get all available activities with descriptions"""
+    return {"activities": MASTER_ACTIVITY_DATA}
+
 
 @app.post("/quests/{user_id}/assign")
 def handle_assign_quest(user_id: int):

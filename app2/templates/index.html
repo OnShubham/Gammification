@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bobo Gamification - Quest & XP Tracker</title>
+    <meta name="description" content="Track your daily quests, earn XP, and level up with Bobo Gamification System">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Background Animation -->
+    <div class="background-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">🎮</div>
+                <h1>Bobo Gamification</h1>
+            </div>
+            <div class="user-selector glass-card">
+                <label for="userId">User ID:</label>
+                <input type="number" id="userId" value="1" min="1" placeholder="Enter User ID">
+            </div>
+        </header>
+
+        <!-- Stats Dashboard -->
+        <section class="stats-dashboard">
+            <div class="stat-card glass-card" id="levelCard">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-content">
+                    <h3>Level</h3>
+                    <p class="stat-value" id="userLevel">--</p>
+                </div>
+            </div>
+            <div class="stat-card glass-card" id="xpCard">
+                <div class="stat-icon">💎</div>
+                <div class="stat-content">
+                    <h3>Total XP</h3>
+                    <p class="stat-value" id="totalXP">--</p>
+                </div>
+            </div>
+            <div class="stat-card glass-card" id="progressCard">
+                <div class="stat-icon">📈</div>
+                <div class="stat-content">
+                    <h3>Progress</h3>
+                    <p class="stat-value" id="xpProgress">--</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- XP Progress Bar -->
+        <div class="xp-progress-container glass-card">
+            <div class="xp-progress-header">
+                <span id="currentLevelLabel">Level --</span>
+                <span id="xpProgressLabel">-- / -- XP</span>
+            </div>
+            <div class="xp-progress-bar">
+                <div class="xp-progress-fill" id="xpProgressFill"></div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Quest Panel -->
+            <section class="quest-panel glass-card">
+                <div class="panel-header">
+                    <h2>📋 Daily Quest</h2>
+                    <button class="btn btn-primary" id="assignQuestBtn">
+                        <span class="btn-icon">🎯</span>
+                        Assign Quest
+                    </button>
+                </div>
+
+                <div class="quest-status" id="questStatus">
+                    <p class="quest-message">Click "Assign Quest" to get started!</p>
+                </div>
+
+                <div class="quest-progress" id="questProgress" style="display: none;">
+                    <div class="progress-info">
+                        <span class="progress-label">Quest Progress</span>
+                        <span class="progress-count" id="progressCount">0/5</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="questProgressFill"></div>
+                    </div>
+                </div>
+
+                <div class="tasks-list" id="tasksList">
+                    <!-- Tasks will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <!-- Activity Logger Panel -->
+            <section class="activity-panel glass-card">
+                <div class="panel-header">
+                    <h2>⚡ Log Activity</h2>
+                </div>
+
+                <div class="activity-selector">
+                    <label for="activitySelect">Select Activity:</label>
+                    <select id="activitySelect" class="activity-dropdown">
+                        <option value="">-- Choose an activity --</option>
+                    </select>
+                </div>
+
+                <div class="activity-description" id="activityDescription">
+                    <p class="description-text">Select an activity to see its description</p>
+                </div>
+
+                <button class="btn btn-success btn-large" id="logActivityBtn" disabled>
+                    <span class="btn-icon">✅</span>
+                    Log Activity
+                </button>
+
+                <div class="activity-result" id="activityResult" style="display: none;">
+                    <!-- Activity result will be shown here -->
+                </div>
+            </section>
+        </div>
+
+
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2024 Bobo Gamification System | Built with ❤️</p>
+        </footer>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon">✅</span>
+        <span class="toast-message" id="toastMessage"></span>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>
