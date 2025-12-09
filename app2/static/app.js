@@ -118,6 +118,11 @@ async function loadQuestStatus() {
         displayQuest(data);
         updateQuestProgress(data.progress);
 
+        // Update Streak Display
+        if (data.streak !== undefined) {
+            updateStreakDisplay(data.streak);
+        }
+
         // Populate activity dropdown with quest tasks
         populateActivityDropdownFromQuest(data.quest_details || data.quest);
     } catch (error) {
@@ -168,6 +173,14 @@ async function logActivity() {
             updateXPProgress(data.xp_update.stats);
         }
 
+        // Update Streak Display
+        if (data.streak_update) {
+            updateStreakDisplay(data.streak_update.current_streak);
+            if (data.streak_update.milestone_hit) {
+                showToast(`🔥 Milestone Reached: ${data.streak_update.milestone_hit} Days!`, 'success');
+            }
+        }
+
         // Update quest progress
         if (data.quest_status) {
             updateQuestProgress(data.quest_status);
@@ -197,6 +210,13 @@ async function logActivity() {
 }
 
 // ===== UI UPDATE FUNCTIONS =====
+
+function updateStreakDisplay(streak) {
+    const streakElement = document.getElementById('currentStreak');
+    if (streakElement) {
+        streakElement.textContent = streak + " Days";
+    }
+}
 
 function populateActivityDropdown() {
     const select = document.getElementById('activitySelect');
@@ -271,6 +291,7 @@ function displayQuest(data) {
         tasksList.appendChild(taskItem);
     });
 }
+
 
 function updateQuestProgress(progress) {
     if (!progress) return;

@@ -14,6 +14,7 @@ from app2.database import ACTIVITY_LOG, DAILY_QUESTS
 from app2.assign_tasks import assign_tasks, get_full_quest_details
 from app2.Master_Activities import MASTER_ACTIVITY_DATA
 from app2.xp_system import process_user_activity_xp
+from app2.streak import update_streak
 
 
 app = FastAPI(title="Bobo Gamification API")
@@ -112,7 +113,7 @@ def handle_assign_quest(user_id: int):
 def handle_log_activity(log_data: ActivityLog):
     """
     Logs a completed activity and runs the task check (simulating the DB trigger).
-    Now also calculates and updates XP.
+    Now also calculates and updates XP and Streaks.
     """
     user_id = log_data.user_id
     activity_name = log_data.activity_name
@@ -133,14 +134,18 @@ def handle_log_activity(log_data: ActivityLog):
     # 3. XP & Level Update
     xp_result = process_user_activity_xp(user_id, activity_name)
 
-    # 4. Simulate the DB Trigger: Execute the check function immediately
+    # 4. Streak Update (New)
+    streak_result = update_streak(user_id)
+
+    # 5. Simulate the DB Trigger: Execute the check function immediately
     check_result = check_daily_tasks(user_id)
     
     return {
         "status": "Activity logged successfully.",
         "quest_status": check_result,
         "logged_activity": activity_name,
-        "xp_update": xp_result
+        "xp_update": xp_result,
+        "streak_update": streak_result
     }
 
 @app.get("/quests/{user_id}/status")
@@ -158,6 +163,15 @@ def view_quest_status(user_id: int):
     # Fetch completed tasks to show progress
     check_result = check_daily_tasks(user_id)
 
+    # Fetch User Streak Info
+    from app2.database import USERS_COLLECTION
+    user_doc = USERS_COLLECTION.find_one({"user_id": str(user_id)})
+    if not user_doc:
+         # Try int just in case
+        user_doc = USERS_COLLECTION.find_one({"user_id": user_id})
+    
+    current_streak = user_doc.get("current_streak", 0) if user_doc else 0
+
     # Get detailed task list for the API response
     detailed_tasks = get_full_quest_details(quest) 
     
@@ -167,5 +181,6 @@ def view_quest_status(user_id: int):
             "status": quest.get("status"),
             "reward_lp": quest.get("quest_reward_lp")
         },
-        "progress": check_result
+        "progress": check_result,
+        "streak": current_streak
     }

@@ -3,8 +3,7 @@ from datetime import datetime
 from app2.Master_Activities import GROUP_1, GROUP_2, GROUP_3, GROUP_4, GROUP_5
 from app2.database import USERS_COLLECTION
 
-# --- XP Configuration ---
-# User requested that all activities be treated equally.
+
 # 1 Activity = 10 XP.
 FIXED_XP_PER_ACTIVITY = 10
 
