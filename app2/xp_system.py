@@ -1,8 +1,7 @@
-import math
-from datetime import datetime
-from app2.Master_Activities import GROUP_1, GROUP_2, GROUP_3, GROUP_4, GROUP_5
-from app2.database import USERS_COLLECTION
 
+from datetime import datetime
+from app2.database import USER_STREAKS, ACTIVITY_LOG
+from datetime import date
 
 # 1 Activity = 10 XP.
 FIXED_XP_PER_ACTIVITY = 10
@@ -42,8 +41,6 @@ def calculate_level_stats(total_xp: int):
         "xp_progress_percent": round((xp_in_current_level / XP_PER_LEVEL) * 100, 2)
     }
 
-from datetime import date
-from app2.database import USERS_COLLECTION, ACTIVITY_LOG
 
 def process_user_activity_xp(user_id: int, activity_name: str):
     """
@@ -78,7 +75,7 @@ def process_user_activity_xp(user_id: int, activity_name: str):
     # We need to ensure type consistency. 'app' creates users.
     # Let's try to query with string version of user_id if int fails or just string.
     
-    user = USERS_COLLECTION.find_one({"user_id": str(user_id)})
+    user = USER_STREAKS.find_one({"user_id": str(user_id)})
     if not user:
         # If user doesn't exist in USERS collection (maybe only tracked in app2?), 
         # we might need to create a stub or skip.
@@ -103,7 +100,7 @@ def process_user_activity_xp(user_id: int, activity_name: str):
         "updated_at": datetime.utcnow()
     }
     
-    USERS_COLLECTION.update_one(
+    USER_STREAKS.update_one(
         {"user_id": str(user_id)},
         {"$set": update_data},
         upsert=True

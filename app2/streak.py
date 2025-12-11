@@ -1,10 +1,10 @@
 from datetime import date, timedelta, datetime
-from app2.database import USERS_COLLECTION
+from app2.database import USER_STREAKS
 
 def update_streak(user_id: int):
     """
     Updates the user's streak based on activity logging.
-    Logic mirrors app/crud.py to maintain consistency.
+    
     """
     # Find user
     # Note: user_id in app/crud.py is str, but app2 seems to use int or match type.
@@ -21,10 +21,10 @@ def update_streak(user_id: int):
     # Let's inspect one user if possible later. For now, we'll try to support the ID passed.
     
     # Query: Try to find user.
-    user = USERS_COLLECTION.find_one({"user_id": str(user_id)})
+    user = USER_STREAKS.find_one({"user_id": str(user_id)})
     if not user:
         # Fallback if stored as int
-        user = USERS_COLLECTION.find_one({"user_id": user_id})
+        user = USER_STREAKS.find_one({"user_id": user_id})
     
     if not user:
         # If user doesn't exist in the Gamification DB, we might need to create them?
@@ -75,7 +75,7 @@ def update_streak(user_id: int):
     # Update DB
     new_checkin_dt = datetime.combine(local_date, datetime.min.time())
     
-    USERS_COLLECTION.update_one(
+    USER_STREAKS.update_one(
         {"_id": user["_id"]},
         {
             "$set": {

@@ -1,4 +1,4 @@
-from app2.database import ACTIVITY_LOG, USERS_COLLECTION
+from app2.database import ACTIVITY_LOG, USER_STREAKS
 from app2.xp_system import get_xp_value, calculate_level_stats, XP_VALUES
 from datetime import datetime
 
@@ -37,7 +37,7 @@ def recalculate_all_xp():
             "updated_at": datetime.utcnow()
         }
         
-        USERS_COLLECTION.update_one(
+        USER_STREAKS.update_one(
             {"user_id": user_id},
             {"$set": update_data},
             upsert=True

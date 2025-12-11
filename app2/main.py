@@ -10,7 +10,7 @@ from typing import Optional
 import os
 
 # Import core logic and data
-from app2.database import ACTIVITY_LOG, DAILY_QUESTS
+from app2.database import ACTIVITY_LOG, DAILY_QUESTS, USER_STREAKS
 from app2.assign_tasks import assign_tasks, get_full_quest_details
 from app2.Master_Activities import MASTER_ACTIVITY_DATA
 from app2.xp_system import process_user_activity_xp
@@ -164,11 +164,10 @@ def view_quest_status(user_id: int):
     check_result = check_daily_tasks(user_id)
 
     # Fetch User Streak Info
-    from app2.database import USERS_COLLECTION
-    user_doc = USERS_COLLECTION.find_one({"user_id": str(user_id)})
+    user_doc = USER_STREAKS.find_one({"user_id": str(user_id)})
     if not user_doc:
          # Try int just in case
-        user_doc = USERS_COLLECTION.find_one({"user_id": user_id})
+        user_doc = USER_STREAKS.find_one({"user_id": user_id})
     
     current_streak = user_doc.get("current_streak", 0) if user_doc else 0
 
