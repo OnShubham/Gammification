@@ -1,0 +1,152 @@
+.weekly-rewards-container {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #E5E5E5;
+}
+
+.header-section {
+    padding: 0;
+    position: relative;
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+    background: transparent;
+}
+
+.header-logo {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+.rewards-grid {
+    padding: 20px 16px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    background: #FFFFFF;
+}
+
+.reward-card {
+    background: linear-gradient(180deg, #E8F4F8 0%, #FFFFFF 100%);
+    border-radius: 12px;
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid #B8D9E8;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.reward-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(93, 173, 226, 0.2);
+}
+
+.reward-card.claimed {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.reward-card.claimed:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.day-label {
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 600;
+    background: #5DADE2;
+    padding: 5px 10px;
+    border-radius: 8px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(93, 173, 226, 0.2);
+}
+
+.reward-icon-container {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border-radius: 50%;
+}
+
+.reward-icon-container img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+.reward-amount {
+    color: #5DADE2;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.reward-card.special {
+    grid-column: span 2;
+}
+
+.reward-card.special .reward-icon-container {
+    width: 60px;
+    height: 60px;
+}
+
+.reward-card.special .reward-icon-container img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+}
+
+.reward-card.special .reward-amount {
+    color: #5DADE2;
+    font-size: 12px;
+}
+
+.claim-button-container {
+    padding: 0 16px 20px 16px;
+}
+
+.claim-button {
+    width: 100%;
+    background: linear-gradient(180deg, #6BB8E5 0%, #5DADE2 100%);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 16px;
+    padding: 14px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(93, 173, 226, 0.3);
+    transition: all 0.2s ease;
+    text-transform: capitalize;
+}
+
+.claim-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(93, 173, 226, 0.4);
+}
+
+.claim-button:active {
+    transform: translateY(0);
+}
+
+.claim-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.claim-button:disabled:hover {
+    transform: none;
+}

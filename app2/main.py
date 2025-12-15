@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime, date
 from typing import Optional
@@ -18,6 +19,19 @@ from app2.streak import update_streak
 
 
 app = FastAPI(title="Bobo Gamification API")
+
+# Add CORS middleware to allow React frontend to connect
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",  # React dev server
+        "http://localhost:3000",  # Alternative React port
+        "*"                       # For production
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Get the directory where this file is located
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
