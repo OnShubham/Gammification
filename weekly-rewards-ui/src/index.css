@@ -10,15 +10,26 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #5c0000;
+  background: #F5F5F5;
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
 }
 
 #root {
   width: 100%;
+  min-height: 100vh;
+}
+
+/* Centered container for Weekly Rewards */
+.App:has(.weekly-rewards-container) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #5c0000;
+  min-height: 100vh;
+}
+
+.App:has(.weekly-rewards-container) .weekly-rewards-container {
   max-width: 400px;
+  width: 100%;
 }
