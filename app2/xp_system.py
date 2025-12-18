@@ -114,3 +114,51 @@ def process_user_activity_xp(user_id: int, activity_name: str):
         "new_level": stats["current_level"],
         "stats": stats
     }
+
+def recalculate_user_xp(user_id: int):
+    """
+    Recalculates the user's total XP by scanning the Activity_Log.
+    Useful for fixing data inconsistencies.
+    """
+    # Query logs. Handle potential type mismatch (int vs str)
+    # The app logs as int usually.
+    logs = list(ACTIVITY_LOG.find({"user_id": user_id}))
+    
+    # If no logs found with int, try str just in case db is mixed
+    if not logs:
+        logs = list(ACTIVITY_LOG.find({"user_id": str(user_id)}))
+        
+    total_xp = 0
+    count = 0
+    
+    for log in logs:
+        activity_name = log.get("activity_name")
+        xp = get_xp_value(activity_name)
+        total_xp += xp
+        count += 1
+        
+    # Calculate new stats
+    stats = calculate_level_stats(total_xp)
+    
+    # Update User Streaks
+    update_data = {
+        "total_xp": total_xp,
+        "current_level": stats["current_level"],
+        "xp_to_next_level": stats["xp_target_next_level"],
+        "xp_progress": stats["xp_in_current_level"],
+        "updated_at": datetime.utcnow()
+    }
+    
+    USER_STREAKS.update_one(
+        {"user_id": str(user_id)},
+        {"$set": update_data},
+        upsert=True
+    )
+    
+    return {
+        "user_id": user_id,
+        "total_logs_processed": count,
+        "recalculated_total_xp": total_xp,
+        "current_level": stats["current_level"],
+        "stats": stats
+    }

@@ -14,7 +14,7 @@ import os
 from app2.database import ACTIVITY_LOG, DAILY_QUESTS, USER_STREAKS
 from app2.assign_tasks import assign_tasks, get_full_quest_details
 from app2.Master_Activities import MASTER_ACTIVITY_DATA
-from app2.xp_system import process_user_activity_xp
+from app2.xp_system import process_user_activity_xp, recalculate_user_xp
 from app2.streak import update_streak
 
 
@@ -196,4 +196,40 @@ def view_quest_status(user_id: int):
         },
         "progress": check_result,
         "streak": current_streak
+    }
+
+@app.post("/xp/recalculate/{user_id}")
+def manual_xp_recalc(user_id: int):
+    """
+    Manually triggers XP recalculation for a user based on their entire activity history.
+    """
+    try:
+        result = recalculate_user_xp(user_id)
+        return {"status": "success", "data": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/streaks/{user_id}")
+def get_user_streaks(user_id: int):
+    """
+    Returns specific streak details from the User_Streaks table.
+    """
+    # Try finding with string user_id first (common convention in this app)
+    user_doc = USER_STREAKS.find_one({"user_id": str(user_id)})
+    
+    if not user_doc:
+         # Try int just in case
+        user_doc = USER_STREAKS.find_one({"user_id": user_id})
+    
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User streak data not found")
+        
+    return {
+        "_id": str(user_doc["_id"]),
+        "user_id": user_doc.get("user_id"),
+        "counting_streaks": user_doc.get("counting_streaks", 0),
+        "current_streak": user_doc.get("current_streak", 0),
+        "last_checkin_date": user_doc.get("last_checkin_date"),
+        "longest_streak": user_doc.get("longest_streak", 0),
+        "regular_streaks": user_doc.get("regular_streaks", {})
     }
